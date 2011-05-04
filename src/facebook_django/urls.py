@@ -15,4 +15,14 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      (r'^admin/', include(admin.site.urls)),
+     (r'^myeworld/$', 'facebook_django.myeworld.views.index'),
+     (r'^myeworld/login', 'facebook_django.myeworld.views.login'),
+     (r'^myeworld/logout', 'facebook_django.myeworld.views.logout'),
+     (r'^myeworld/console', 'facebook_django.myeworld.views.console'),
+     (r'^myeworld/facebook/(?P<user_id>\d+)/links', 'facebook_django.myeworld.views.user_links'),
+     (r'^myeworld/statics/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root': '/home/obearn/projets/facebook_django/resources/html/'}),
+     (r'^myeworld/fql', 'facebook_django.myeworld.views.fql'),                  
 )
+
+
