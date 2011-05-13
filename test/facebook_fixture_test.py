@@ -1,5 +1,5 @@
 from unittest import TestCase, TestSuite
-from facebook_fixture import FaceBookFixture, TestUser, FaceBookUser
+from facebook_fixture import FaceBookFixture, TestUser, FaceBookUserCoordinates
 import unittest
 from facebook_django.repository.facebook_link_repository import FaceBookLinkRepository
 
@@ -83,7 +83,7 @@ class FacebookFixtureUserManagementTest(TestCase):
         self.assertEqual(len(user_friends), 1)
         
         user_friend = user_friends[0]
-        self.assertTrue(isinstance(user_friend, FaceBookUser))
+        self.assertTrue(isinstance(user_friend, FaceBookUserCoordinates))
         self.assertEqual(user2.id, user_friend.id)
 
 class FixtureFixtureLinkManagementTest(TestCase):

@@ -1,7 +1,14 @@
+from facebook_django.model.facebook_objects import FaceBookLink
 from facebook_django.repository.facebook_repository import FaceBookRepository
 import json
-from facebook_django.model.facebook_objects import FaceBookLink
 
+
+
+#class FaceBookLinkJSonDecoder(json.decoder):
+#    
+#    def custom_decode(self, json_thread):
+#        print json_thread
+        
 class FaceBookLinkRepository(FaceBookRepository):
     
     def find_links(self, user):
@@ -48,6 +55,7 @@ class FaceBookLinkRepository(FaceBookRepository):
         user_links_json = self._do_request("GET", links_url, links_param)
         link = json.loads(user_links_json)
         
+        print  user_links_json
         facebook_link = self._create_facebook_link(link)
                 
         return facebook_link

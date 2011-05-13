@@ -1,16 +1,14 @@
 # Create your views here.
 from django.http import HttpResponse
-from django.template import loader
-from django.template.context import Context, RequestContext
-from facebook_django.myeworld.models import MyContent
-import urllib
-import json
 from django.shortcuts import redirect, render_to_response
-from facebook_django.myeworld.utils import GenericTree
-from generic_tree_test import GenericTreeTest
+from django.template.context import RequestContext
 from django.utils.safestring import mark_safe
-from facebook_django.model.facebook_objects import FaceBookUser, FaceBookLink
-from django.contrib.gis.geometry.regex import json_regex
+from facebook_django.model.facebook_objects import FaceBookLink,\
+    FaceBookUserCoordinates
+from facebook_django.myeworld.utils import GenericTree
+import json
+import urllib
+
 
 
 class FaceBookAuthenticationException(Exception):
@@ -122,7 +120,7 @@ def index(request):
         
         user_friends = []
         for user_data in json_dict["data"]:
-            user_friends.append(FaceBookUser(user_data["id"], user_data["name"]))
+            user_friends.append(FaceBookUserCoordinates(user_data["id"], user_data["name"]))
     
         return render_to_response("index.html", {'current_user': current_user, "user_friends": user_friends}, context_instance=RequestContext(request))
     else:

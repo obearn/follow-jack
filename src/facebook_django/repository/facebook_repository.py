@@ -5,6 +5,7 @@ Created on 2 mai 2011
 '''
 import urllib
 import httplib
+import json
 
 class FaceBookAuthenticationException(Exception):
     pass
@@ -28,7 +29,7 @@ class FacebookExceptionFactory():
         else:
             return Exception("Invalid facebook error message, error key not found %s" % json_error_dict)
       
-
+   
 class FaceBookRepository(object):
     
     GET  = 'GET'
@@ -60,5 +61,3 @@ class FaceBookRepository(object):
             conn.close()
         
         return data
-    
-    

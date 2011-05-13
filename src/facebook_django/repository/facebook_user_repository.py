@@ -6,5 +6,5 @@ import json
 
 
 class FacebookUserRepository(FaceBookRepository):
-   
+   pass
     

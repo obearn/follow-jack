@@ -1,13 +1,14 @@
-import urllib
-import httplib
-import json
-from facebook_django.model.facebook_objects import FaceBookObject, FaceBookUser,\
-    FaceBookLink
+from facebook_django.model.facebook_objects import FaceBookLink,\
+    FaceBookUserCoordinates
 from facebook_django.myeworld.views import FacebookExceptionFactory
 from facebook_django.repository.facebook_repository import FaceBookRepository
+import httplib
+import json
+import urllib
+
 
     
-class TestUser(FaceBookObject):
+class TestUser(object):
 
     def __init__(self, id, login_url, access_token, password=None):
         self.id = id
@@ -120,7 +121,7 @@ class FaceBookFixture(FaceBookRepository):
         user_friends = json.loads(friends)
         user_friend_list = []
         for user_data in user_friends["data"]:
-            user_friend_list.append(FaceBookUser(user_data["id"], user_data["name"]))
+            user_friend_list.append(FaceBookUserCoordinates(user_data["id"], user_data["name"]))
             
         return user_friend_list
     
