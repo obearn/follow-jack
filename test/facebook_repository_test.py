@@ -1,28 +1,15 @@
-from unittest import TestCase
-from django.test.simple import DjangoTestSuiteRunner
-import json
-from facebook_django.model.facebook_objects import FaceBookLink, FaceBookComment,\
-    FaceBookObject, FaceBookBase, FaceBookUserCoordinates
-import re
-from facebook_django.repository.facebook_repository import FaceBookRepository
-from types import StringType
-import datetime
 from date_utils import utc
+from django.test.simple import DjangoTestSuiteRunner
+from facebook_django.model.facebook_objects import FaceBookLink, FaceBookComment, \
+    FaceBookObject, FaceBookUserCoordinates, FaceBookList, FaceBookListFactory
+from unittest import TestCase
+import datetime
+import json
+import re
 
 test_runner = DjangoTestSuiteRunner()
 test_runner.setup_test_environment()
 test_runner.setup_databases()
-
-#class FaceBookLinkRepositoryTest(TestCase):
-#    
-#    def test_create_link_from_json_dict(self):
-#        dict = {u'picture': u'http://www.iana.org/_img/icann-logo-micro.png', u'from': {u'name': u'Helen Ambccbhechci Baowitz', u'id': u'100002332853839'}, u'name': u'IANA \u2014 Example domains', u'comments': {u'data': [{u'created_time': u'2011-05-02T20:27:36+0000', u'message': u'My 2 cents', u'from': {u'name': u'Jennifer Ambbifiachjh Dingleberg', u'id': u'100002296913808'}, u'id': u'164289640297819_1645251'}]}, u'link': u'http://www.example.com/article.html', u'created_time': u'2011-05-02T20:27:29+0000', u'message': u'User Message', u'icon': u'http://static.ak.fbcdn.net/rsrc.php/v1/yD/r/aS8ecmYRys0.gif', u'id': u'164289640297819', u'description': u'As described in RFC 2606, \twe maintain a number of domains such as EXAMPLE.COM and EXAMPLE.ORG \tfor documentation purposes. These domains may be used as illustrative \texamples in documents without prior coordination with us. They are  \tnot available for registration.'}
-#        
-#        fb_link_repos = FaceBookLinkRepository()
-#        fb_link = fb_link_repos._create_facebook_link(dict)
-#        
-#        self.assertTrue(fb_link.comments is not None)
-        
 
 json_dict = {"id":"190575504321662",
              "from": {"name":"Elizabeth Ambdbhhjefcf Wisemansky","id":"100002428805636"},
@@ -106,6 +93,25 @@ class FaceBookRepositoryTest(TestCase):
         self.assertEqual(comment.from_user.id, facebook_user_coord_dict["id"])
         self.assertEqual(comment.from_user.name, facebook_user_coord_dict["name"])
         
+    def test_decode_list_data(self):
+        test_dict = {"data": [{"id":"272196846130377","from":{"name":"toto","id":"100002799826466"},
+                               "message":"User Message",
+                               "picture":"http:\/\/external.ak.fbcdn.net\/safe_image.php?d=AQCFd2uldA0g2fPf&w=90&h=90&url=http\u00253A\u00252F\u00252Fwww.iana.org\u00252F_img\u00252Ficann-logo-micro.png",
+                               "link":"http:\/\/www.iana.org\/domains\/example\/",
+                               "name":"IANA \u2014 Example domains",
+                               "description":"As described in RFC 2606, \twe maintain a number of domains such as EXAMPLE.COM and EXAMPLE.ORG \tfor documentation purposes. These domains may be used as illustrative \texamples in documents without prior coordination with us. They are  \tnot available for registration.",
+                               "icon":"http:\/\/static.ak.fbcdn.net\/rsrc.php\/v1\/yD\/r\/aS8ecmYRys0.gif",
+                               "created_time":"2011-08-15T13:35:18+0000"}],
+                    "paging":{"previous":"https:\/\/graph.facebook.com\/100002799826466\/links?access_token=10150125414350721|2.AQAnL5tDmErj_l2i.3600.1313420400.0-100002799826466|hdcZtlDlOnXjkojTqL3LcxXpVXs&limit=25&since=1313415318",
+                              "next":"https:\/\/graph.facebook.com\/100002799826466\/links?access_token=10150125414350721|2.AQAnL5tDmErj_l2i.3600.1313420400.0-100002799826466|hdcZtlDlOnXjkojTqL3LcxXpVXs&limit=25&until=1313415318"}}
+        
+        links = FaceBookListFactory.loads(json.dumps(test_dict), FaceBookLink)
+        
+        self.assertTrue(isinstance(links, FaceBookList))
+        self.assertEqual(len(links.data), 1, "The list shoud have one element, found %s" % len(links.data))
+        link = links.data[0]
+        self.assertTrue(isinstance(link, FaceBookLink))
+        self.assertEqual(link.id, "272196846130377")
         
     #TODO def test_decode_empty_list_field(self):
     #TODO def test_decode_multiple_items_list_field(self): ??

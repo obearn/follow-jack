@@ -1,5 +1,5 @@
 from facebook_django.model.facebook_objects import FaceBookLink,\
-    FaceBookUserCoordinates
+    FaceBookUserCoordinates, FaceBookObject
 from facebook_django.myeworld.views import FacebookExceptionFactory
 from facebook_django.repository.facebook_repository import FaceBookRepository
 import httplib
@@ -64,10 +64,12 @@ class FaceBookFixture(FaceBookRepository):
     def add_user(self, permissions="read_stream", user_key=None):
         add_user_params = dict(access_token=self._app_token,
                         installed = "true",
-                        permissions=permissions)
+                        permissions=permissions,
+                        name="toto",
+                        method="post")
         app_url = "%s/accounts/test-users" % self._app_id
         
-        data = self._do_request("POST", app_url, add_user_params)
+        data = self._do_request(FaceBookRepository.GET, app_url, add_user_params)
         user_credential = json.loads(data)
         
         test_user = TestUser(user_credential["id"], user_credential["login_url"],
@@ -121,7 +123,7 @@ class FaceBookFixture(FaceBookRepository):
         user_friends = json.loads(friends)
         user_friend_list = []
         for user_data in user_friends["data"]:
-            user_friend_list.append(FaceBookUserCoordinates(user_data["id"], user_data["name"]))
+            user_friend_list.append(FaceBookUserCoordinates(user_data["id"]))
             
         return user_friend_list
     
@@ -152,13 +154,14 @@ class FaceBookFixture(FaceBookRepository):
         link_url = "/%s/comments" % link.id
         link_json = self._do_request("POST", link_url, create_link_params)
         
-        link_dict = json.loads(link_json)
+        comment_fb_coordinates = FaceBookObject.loads(link_json)
         
-        if "error" in link_dict:
-            raise FacebookExceptionFactory.createException(link_dict)
+#        TODO
+#        if "error" in link_dict:
+#            raise FacebookExceptionFactory.createException(link_dict)
         
         
-        return "151669121567304_1288680"
+        return comment_fb_coordinates.id
     
     def find_object(self, user, object_id):
         links_param = {"access_token": user.access_token}

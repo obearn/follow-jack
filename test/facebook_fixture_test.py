@@ -21,7 +21,7 @@ class FacebookFixtureUserManagementTest(TestCase):
         #Assertions
         self.assertTrue(isinstance(test_user, TestUser))
         
-        list_users = self._facebook_fixture.list_users()
+        list_users = self._facebook_fixture.list_test_users()
         self.assertTrue(list_users is not None and len(list_users) > 0)
         for test_user in list_users:
             self.assertTrue(isinstance(test_user, TestUser))
@@ -37,7 +37,7 @@ class FacebookFixtureUserManagementTest(TestCase):
         
         #Assertions
         self.assertTrue(return_value is True)
-        list_users = self._facebook_fixture.list_users()
+        list_users = self._facebook_fixture.list_test_users()
         self.assertTrue(list_users is not None and len(list_users) == 0)
         
     def test_delete_user(self):
@@ -52,7 +52,7 @@ class FacebookFixtureUserManagementTest(TestCase):
         
         #Assertions
         self.assertTrue(return_value is True)
-        list_users = self._facebook_fixture.list_users()
+        list_users = self._facebook_fixture.list_test_users()
         self.assertEqual(len(list_users), 2)
         self.assertTrue(user1 in list_users)
         self.assertTrue(user2 not in list_users)
@@ -91,7 +91,7 @@ class FixtureFixtureLinkManagementTest(TestCase):
     def setUp(self):
         self._facebook_fixture = FaceBookFixture(APP_ID, CLIENT_SECRET)
         self._link_user    = self._facebook_fixture.add_user(permissions='read_stream,share_item', user_key="link_user")
-        self._friend_user = self._facebook_fixture.add_user(user_key="friend_user")
+        self._friend_user = self._facebook_fixture.add_user(permissions='read_stream, publish_stream', user_key="friend_user")
         self._facebook_fixture.create_friends(self._link_user, self._friend_user)
         self._facebook_link_repository = FaceBookLinkRepository()
         
@@ -127,7 +127,7 @@ class FixtureFixtureLinkManagementTest(TestCase):
         updated_link = self._facebook_link_repository.find_link(self._link_user, facebook_link.id)
         
         self.assertTrue(comment_id in [comment.id for comment in updated_link.comments],
-                         "Comment %s not found in %s" % (comment_id, updated_link.comments))
+                         "Comment %s not found in %s" % (comment_id, [comment.id for comment in updated_link.comments]))
         
         
         

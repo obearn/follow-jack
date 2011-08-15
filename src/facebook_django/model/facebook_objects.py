@@ -28,7 +28,12 @@ class FaceBookDateAttr(FaceBookAttr):
 class ListOf(FaceBookAttr):
     
     def set_value(self, obj, name, value):
-        data = value["data"]
+        if isinstance(value, dict):
+            data = value["data"]
+        elif isinstance(value, list):
+            data = value
+        else:
+            raise Exception("Unsupported type for ListOf attribute data : %s" % type(value))
         list_value = []
         for object_dict in data:
             item = self.type.load_dict(object_dict)
@@ -88,8 +93,12 @@ class FaceBookObject(object):
         
     @classmethod
     def load_dict(cls, object_dict):
-        id = object_dict.pop("id")
+        id = None
+        if "id" in object_dict:
+            id = object_dict.pop("id")
+        
         facebook_object =  cls(id)
+        
         for key, value in object_dict.items():
             if not hasattr(facebook_object, key):
                 field_mapping = cls.json_field_mapping.get(key)
@@ -119,7 +128,21 @@ class FaceBookComment(FaceBookObject):
     created_time = FaceBookDateAttr()
     message = FaceBookAttr(str)
     from_user = FaceBookAttr(FaceBookUserCoordinates, json_field="from")
-           
+          
+class FaceBookPaging(FaceBookObject):
+    next = FaceBookAttr(str)
+    previouse = FaceBookAttr(str)
+     
+class FaceBookListFactory():
+    
+    @classmethod
+    def loads(cls, data_string, item_type):
+        face_book_list_type = type("FaceBookList%s" % item_type, (FaceBookList, ), {"data":ListOf(item_type)})
+        return face_book_list_type.loads(data_string)
+    
+class FaceBookList(FaceBookObject):
+    paging = FaceBookAttr(FaceBookPaging)
+    
 class FaceBookLink(FaceBookObject):
 #    name = models.CharField(max_length=200)
 #    link = models.CharField(max_length=200)
