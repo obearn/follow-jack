@@ -22,7 +22,8 @@ json_dict = {"id":"190575504321662",
              "created_time":"2011-05-11T21:49:39+0000",
              "comments": {"data":[{"id":"190575504321662_2453948","from":{"name":"Lisa Ambdeceheeid Martinazziman","id":"100002453585594"},"message":"My 2 cents","created_time":"2011-05-11T21:49:40+0000"}]}}
 
-class FaceBookRepositoryTest(TestCase):
+class  
+FaceBookRepositoryTest(TestCase):
  
     def test_decode_link_id(self):       
         test_dict = {"id":"161660850563710"}

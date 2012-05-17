@@ -114,18 +114,7 @@ class FaceBookFixture(FaceBookRepository):
             
         return return_value
 
-    def find_friends(self, user):
-        friends_param = {"access_token": user.access_token}
-        friends_url = "/%s/friends" % user.id
-        friends = self._do_request("GET", friends_url, friends_param)
-        
-        print "User %s friends :%s" % (user.id, friends)
-        user_friends = json.loads(friends)
-        user_friend_list = []
-        for user_data in user_friends["data"]:
-            user_friend_list.append(FaceBookUserCoordinates(user_data["id"]))
-            
-        return user_friend_list
+
     
     def create_link(self, user, name, url, picture, caption, description, message):
         create_link_params = {'access_token': user.access_token,
